@@ -1052,7 +1052,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     CGContextClip(context);
 
     CGContextAddPath(context, roundedRect);
-    CGContextSetShadowWithColor(UIGraphicsGetCurrentContext(), self.shadowOffset, self.shadowBlur, self.shadowColor.CGColor);
+    CGContextSetShadowWithColor(context, self.shadowOffset, self.shadowBlur, self.shadowColor.CGColor);
     CGContextSetStrokeColorWithColor(context, self.backgroundColor.CGColor);
     CGContextStrokePath(context);
 
