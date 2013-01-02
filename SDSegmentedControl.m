@@ -305,6 +305,9 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     [segmentView sizeToFit];
 
     index = MAX(MIN(index, self.numberOfSegments), 0);
+    if (!self._items) {
+        [self set_items:[NSMutableArray array]];
+    }
     if (index < self._items.count)
     {
         segmentView.center = ((UIView *)self._items[index]).center;
