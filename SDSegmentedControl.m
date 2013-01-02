@@ -37,6 +37,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     NSInteger _lastSelectedSegmentIndex;
     UIScrollView *_scrollView;
     CAShapeLayer *_borderBottomLayer;
+    CAShapeLayer *_borderTopLayer;
     BOOL _isScrollingBySelection;
     void (^lastCompletionBlock)();
 }
@@ -114,6 +115,13 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     _borderBottomLayer.lineWidth = .5;
     _borderBottomLayer.fillColor = nil;
     [self.layer addSublayer:_borderBottomLayer];
+
+    // Init border top layer
+    [self.layer addSublayer:_borderTopLayer = CAShapeLayer.layer];
+    _borderTopLayer.strokeColor = UIColor.whiteColor.CGColor;
+    _borderTopLayer.lineWidth = .5;
+    _borderTopLayer.fillColor = nil;
+    [self.layer addSublayer:_borderTopLayer];
 
     // Init scrollView
     [self addSubview:_scrollView = UIScrollView.new];
@@ -564,6 +572,14 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     [shadowPath addLineToPoint:CGPointMake(left, top)];
 
     //
+    // Top white line
+    //
+    _borderTopLayer.frame = self.bounds;
+    __block UIBezierPath *borderTopPath = UIBezierPath.new;
+    [borderTopPath moveToPoint:CGPointMake(0, 0)];
+    [borderTopPath addLineToPoint:CGPointMake(CGRectGetMaxX(bounds), 0)];
+
+    //
     // Bottom white line
     //
     _borderBottomLayer.frame = self.bounds;
@@ -575,6 +591,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     // Skip current animations and ensure the completion block was applied
     // otherwise this will end up in ugly effects if the selection was changed very fast
     [self.layer removeAllAnimations];
+    [_borderTopLayer removeAllAnimations];
     [_borderBottomLayer removeAllAnimations];
     if (lastCompletionBlock)
     {
@@ -586,6 +603,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     {
         ((CAShapeLayer *)self.layer).path = path.CGPath;
         self.layer.shadowPath = shadowPath.CGPath;
+        _borderTopLayer.path = borderTopPath.CGPath;
         _borderBottomLayer.path = borderBottomPath.CGPath;
 
         // Dereference itself to be not executed twice
