@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class SDStainView;
+@protocol SDSegmentedControlDelegate;
 
 // Most inherited UI_APPERANCE_SELECTORs are ignored. You can use the following selectors
 // to customize appearance:
@@ -24,6 +25,7 @@
 @property (assign, nonatomic) CFTimeInterval animationDuration UI_APPEARANCE_SELECTOR;
 @property (assign, nonatomic) CGFloat interItemSpace UI_APPEARANCE_SELECTOR;
 @property (assign, nonatomic) UIEdgeInsets stainEdgeInsets UI_APPEARANCE_SELECTOR;
+@property (assign, nonatomic) id <SDSegmentedControlDelegate> segmentedControlDelegate;
 @property (nonatomic, readonly) NSArray *segmentViews;
 @property (nonatomic, readonly) SDStainView *stainView;
 
@@ -44,5 +46,13 @@
 @property (assign, nonatomic) CGFloat shadowBlur UI_APPEARANCE_SELECTOR;
 @property (retain, nonatomic) UIColor *shadowColor UI_APPEARANCE_SELECTOR;
 @property (retain, nonatomic) UIColor *innerStrokeColor UI_APPEARANCE_SELECTOR;
+
+@end
+
+@protocol SDSegmentedControlDelegate <NSObject>
+
+@optional
+- (BOOL)segmentedControl:(SDSegmentedControl *)segmentedControl shouldSelectSegmentAtIndex:(NSInteger)theIndex;
+- (void)segmentedControl:(SDSegmentedControl *)segmentedControl didSelectSegmentAtIndex:(NSInteger)theIndex;
 
 @end

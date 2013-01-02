@@ -26,6 +26,9 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 
 @interface SDSegmentedControl ()
 
+- (BOOL)shouldSelectSegmentAtIndex:(NSInteger)theIndex;
+- (void)didSelectSegmentAtIndex:(NSInteger)theIndex;
+
 @property (strong, nonatomic) NSMutableArray *_items;
 @property (strong, nonatomic) UIView *_selectedStainView;
 
@@ -293,11 +296,12 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 
 - (void)setSelectedSegmentIndex:(NSInteger)selectedSegmentIndex
 {
-    if (_selectedSegmentIndex != selectedSegmentIndex)
+    if ([self shouldSelectSegmentAtIndex:selectedSegmentIndex] && _selectedSegmentIndex != selectedSegmentIndex)
     {
         NSParameterAssert(selectedSegmentIndex < (NSInteger)self._items.count);
         _lastSelectedSegmentIndex = _selectedSegmentIndex;
         _selectedSegmentIndex = selectedSegmentIndex;
+        [self didSelectSegmentAtIndex:selectedSegmentIndex];
         [self setNeedsLayout];
     }
 }
@@ -887,11 +891,29 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 - (void)handleSelect:(SDSegmentView *)view
 {
     NSUInteger index = [self._items indexOfObject:view];
-    if (index != NSNotFound && index != self.selectedSegmentIndex)
+    if (index != NSNotFound && [self shouldSelectSegmentAtIndex:index] && index != self.selectedSegmentIndex)
     {
         self.selectedSegmentIndex = index;
+        [self didSelectSegmentAtIndex:index];
         [self setNeedsLayout];
         [self sendActionsForControlEvents:UIControlEventValueChanged];
+    }
+}
+
+#pragma mark - Delegate helper methods
+
+- (BOOL)shouldSelectSegmentAtIndex:(NSInteger)theIndex
+{
+    if ([self.segmentedControlDelegate respondsToSelector:@selector(segmentedControl:shouldSelectSegmentAtIndex:)]) {
+        return [self.segmentedControlDelegate segmentedControl:self shouldSelectSegmentAtIndex:theIndex];
+    }
+    return YES;
+}
+
+- (void)didSelectSegmentAtIndex:(NSInteger)theIndex
+{
+    if ([self.segmentedControlDelegate respondsToSelector:@selector(segmentedControl:didSelectSegmentAtIndex:)]) {
+        [self.segmentedControlDelegate segmentedControl:self didSelectSegmentAtIndex:theIndex];
     }
 }
 
