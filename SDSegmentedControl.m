@@ -146,6 +146,17 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     ((CAShapeLayer *)self.layer).fillColor = backgroundColor.CGColor;
 }
 
+- (UIColor *)strokeColor
+{
+    return [UIColor colorWithCGColor:_borderTopLayer.strokeColor];
+}
+
+- (void)setStrokeColor:(UIColor *)strokeColor
+{
+    _borderTopLayer.strokeColor = strokeColor.CGColor;
+    _borderBottomLayer.strokeColor = strokeColor.CGColor;
+}
+
 #pragma mark - UIKit API
 
 - (void)insertSegmentWithImage:(UIImage *)image atIndex:(NSUInteger)index animated:(BOOL)animated
