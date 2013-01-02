@@ -156,6 +156,16 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     _borderBottomLayer.strokeColor = strokeColor.CGColor;
 }
 
+- (NSArray *)segmentViews
+{
+    return [self _items];
+}
+
+- (SDStainView *)stainView
+{
+    return (SDStainView *)[self _selectedStainView];
+}
+
 #pragma mark - UIKit API
 
 - (void)insertSegmentWithImage:(UIImage *)image atIndex:(NSUInteger)index animated:(BOOL)animated
