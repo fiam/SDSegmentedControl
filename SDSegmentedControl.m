@@ -9,6 +9,14 @@
 
 #pragma mark - Constants
 
+#if __has_feature(objc_arc)
+#define SD_RELEASE(x)
+#define SUPER_DEALLOC()
+#else
+#define SD_RELEASE(x) ([x release])
+#define SUPER_DEALLOC() ([super dealloc])
+#endif
+
 const NSTimeInterval kSDSegmentedControlDefaultDuration = 0.2;
 const CGFloat kSDSegmentedControlArrowSize = 6.5;
 const CGFloat kSDSegmentedControlInterItemSpace = 30.0;
@@ -29,8 +37,8 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 - (BOOL)shouldSelectSegmentAtIndex:(NSInteger)theIndex;
 - (void)didSelectSegmentAtIndex:(NSInteger)theIndex;
 
-@property (strong, nonatomic) NSMutableArray *_items;
-@property (strong, nonatomic) UIView *_selectedStainView;
+@property (retain, nonatomic) NSMutableArray *_items;
+@property (retain, nonatomic) UIView *_selectedStainView;
 
 @end
 
@@ -69,6 +77,13 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
         }];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    SD_RELEASE(__items);
+    SD_RELEASE(__selectedStainView);
+    SUPER_DEALLOC();
 }
 
 - (void)awakeFromNib
@@ -128,6 +143,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 
     // Init scrollView
     [self addSubview:_scrollView = UIScrollView.new];
+    SD_RELEASE(_scrollView);
     _scrollView.delegate = self;
     _scrollView.scrollsToTop = NO;
     _scrollView.backgroundColor = UIColor.clearColor;
@@ -135,7 +151,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     _scrollView.showsVerticalScrollIndicator = NO;
 
     // Init stain view
-    [_scrollView addSubview:self._selectedStainView = SDStainView.new];
+    [_scrollView addSubview:__selectedStainView = SDStainView.new];
 }
 
 - (UIColor *)backgroundColor
@@ -352,6 +368,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
         [_scrollView addSubview:segmentView];
         [self._items addObject:segmentView];
     }
+    SD_RELEASE(segmentView);
 
     if (self.selectedSegmentIndex >= index)
     {
@@ -626,9 +643,13 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     void(^assignLayerPaths)() = ^
     {
         ((CAShapeLayer *)self.layer).path = path.CGPath;
+        SD_RELEASE(path);
         self.layer.shadowPath = shadowPath.CGPath;
+        SD_RELEASE(shadowPath);
         _borderTopLayer.path = borderTopPath.CGPath;
+        SD_RELEASE(borderTopPath);
         _borderBottomLayer.path = borderBottomPath.CGPath;
+        SD_RELEASE(borderBottomPath);
 
         // Dereference itself to be not executed twice
         lastCompletionBlock = nil;
@@ -886,6 +907,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     {
         [path addLineToPoint:CGPointMake(right, point.y)];
     }
+    SD_RELEASE(points);
 }
 
 - (void)handleSelect:(SDSegmentView *)view
@@ -955,7 +977,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 
 + (SDSegmentView *)new
 {
-    return [self.class buttonWithType:UIButtonTypeCustom];
+    return [[self.class buttonWithType:UIButtonTypeCustom] retain];
 }
 
 + (id)appearance
@@ -1005,6 +1027,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
         [imageView.layer renderInContext:UIGraphicsGetCurrentContext()];
         image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
+        SD_RELEASE(imageView);
     }
 
 	return image;
@@ -1068,6 +1091,13 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
         self.clipsToBounds = YES;
     }
     return self;
+}
+
+- (void)dealloc
+{
+    SD_RELEASE(_shadowColor);
+    SD_RELEASE(_innerStrokeColor);
+    SUPER_DEALLOC();
 }
 
 - (void)setFrame:(CGRect)frame
