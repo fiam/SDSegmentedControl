@@ -959,22 +959,6 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 
 @implementation SDSegmentView
 
-+ (void)initialize
-{
-    [super initialize];
-
-    SDSegmentView *appearance = [self appearance];
-    [appearance setTitleColor:[UIColor colorWithWhite:0.392 alpha:1] forState:UIControlStateNormal];
-    [appearance setTitleShadowColor:UIColor.whiteColor forState:UIControlStateNormal];
-
-    [appearance setTitleColor:[UIColor colorWithWhite:0.235 alpha:1] forState:UIControlStateSelected];
-    [appearance setTitleShadowColor:UIColor.whiteColor forState:UIControlStateSelected];
-
-    [appearance setTitleColor:[UIColor colorWithWhite:0.800 alpha:1] forState:UIControlStateDisabled];
-    [appearance setTitleShadowColor:UIColor.clearColor forState:UIControlStateDisabled];
-
-}
-
 + (SDSegmentView *)new
 {
     return [[self.class buttonWithType:UIButtonTypeCustom] retain];
@@ -998,6 +982,15 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
         self.titleEdgeInsets = UIEdgeInsetsMake(0, 0.0, 0, -8.0); // Space between text and image
         self.imageEdgeInsets = UIEdgeInsetsMake(0, 0.0, 0, 0.0); // Space between image and stain
         self.contentEdgeInsets = UIEdgeInsetsMake(0, 0.0, 0, 8.0); // Enlarge touchable area
+
+        [self setTitleColor:[UIColor colorWithWhite:0.392 alpha:1] forState:UIControlStateNormal];
+        [self setTitleShadowColor:UIColor.whiteColor forState:UIControlStateNormal];
+
+        [self setTitleColor:[UIColor colorWithWhite:0.235 alpha:1] forState:UIControlStateSelected];
+        [self setTitleShadowColor:UIColor.whiteColor forState:UIControlStateSelected];
+
+        [self setTitleColor:[UIColor colorWithWhite:0.800 alpha:1] forState:UIControlStateDisabled];
+        [self setTitleShadowColor:UIColor.clearColor forState:UIControlStateDisabled];
 
 #ifdef SDSegmentedControlDebug
         self.backgroundColor = [UIColor colorWithHue:1.00 saturation:1.0 brightness:1.0 alpha:0.5];
@@ -1067,18 +1060,6 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 
 @implementation SDStainView
 
-+ (void)initialize
-{
-    [super initialize];
-    SDStainView *appearance = [self appearance];
-    appearance.edgeInsets = UIEdgeInsetsMake(-.5, -.5, -.5, -.5);
-    appearance.shadowOffset = CGSizeMake(0, .5);
-    appearance.shadowBlur = 2.5;
-    appearance.shadowColor = UIColor.blackColor;
-    appearance.innerStrokeColor = UIColor.whiteColor;
-    appearance.backgroundColor = [UIColor colorWithWhite:0.816 alpha:1];
-}
-
 + (id)appearance
 {
     return [self appearanceWhenContainedIn:SDSegmentedControl.class, nil];
@@ -1089,6 +1070,12 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     if ((self = [super initWithFrame:frame]))
     {
         self.clipsToBounds = YES;
+        self.edgeInsets = UIEdgeInsetsMake(-.5, -.5, -.5, -.5);
+        self.shadowOffset = CGSizeMake(0, .5);
+        self.shadowBlur = 2.5;
+        self.shadowColor = UIColor.blackColor;
+        self.innerStrokeColor = UIColor.whiteColor;
+        self.backgroundColor = [UIColor colorWithWhite:0.816 alpha:1];
     }
     return self;
 }
