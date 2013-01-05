@@ -58,9 +58,9 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     return CAShapeLayer.class;
 }
 
-- (id)init
+- (id)initWithFrame:(CGRect)frame
 {
-    if ((self = [super init]))
+    if ((self = [super initWithFrame:frame]))
     {
         [self commonInit];
     }
@@ -69,7 +69,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 
 - (id)initWithItems:(NSArray *)items
 {
-    if ((self = [self init]))
+    if ((self = [self initWithFrame:CGRectZero]))
     {
         [items enumerateObjectsUsingBlock:^(id title, NSUInteger idx, BOOL *stop)
         {
@@ -1084,9 +1084,9 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     return [self appearanceWhenContainedIn:SDSegmentedControl.class, nil];
 }
 
-- (id)init
+- (id)initWithFrame:(CGRect)frame
 {
-    if ((self = [super init]))
+    if ((self = [super initWithFrame:frame]))
     {
         self.clipsToBounds = YES;
     }
