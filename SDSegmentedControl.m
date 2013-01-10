@@ -298,11 +298,6 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 - (void)setEnabled:(BOOL)enabled forSegmentAtIndex:(NSUInteger)index
 {
     [self segmentAtIndex:index].enabled = enabled;
-
-    if (index == self.selectedSegmentIndex)
-    {
-        self.selectedSegmentIndex = [self firstEnabledSegmentIndexNearIndex:index];
-    }
 }
 
 - (BOOL)isEnabledForSegmentAtIndex:(NSUInteger)index
