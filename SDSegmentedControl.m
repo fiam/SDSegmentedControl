@@ -81,6 +81,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 
 - (void)dealloc
 {
+    _segmentedControlDelegate = nil;
     SD_RELEASE(__items);
     __items = nil;
     SD_RELEASE(__selectedStainView);
