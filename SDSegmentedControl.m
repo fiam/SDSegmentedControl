@@ -11,9 +11,11 @@
 
 #if __has_feature(objc_arc)
 #define SD_RELEASE(x)
+#define SD_COPY(x)
 #define SUPER_DEALLOC()
 #else
 #define SD_RELEASE(x) ([x release])
+#define SD_COPY(x) ([x copy])
 #define SUPER_DEALLOC() ([super dealloc])
 #endif
 
@@ -594,7 +596,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     //
     // Mask
     //
-    __block UIBezierPath *path = UIBezierPath.new;
+    UIBezierPath *path = UIBezierPath.new;
     [path moveToPoint:bounds.origin];
     [self addArrowAtPoint:CGPointMake(position, bottom) toPath:path withLineWidth:0.0];
     [path addLineToPoint:CGPointMake(right, top)];
@@ -604,7 +606,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     // Shadow mask
     //
     top += 10;
-    __block UIBezierPath *shadowPath = UIBezierPath.new;
+    UIBezierPath *shadowPath = UIBezierPath.new;
     [shadowPath moveToPoint:CGPointMake(left, top)];
     [self addArrowAtPoint:CGPointMake(position, bottom) toPath:shadowPath withLineWidth:0.0];
     [shadowPath addLineToPoint:CGPointMake(right, top)];
@@ -614,7 +616,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     // Top white line
     //
     _borderTopLayer.frame = self.bounds;
-    __block UIBezierPath *borderTopPath = UIBezierPath.new;
+    UIBezierPath *borderTopPath = UIBezierPath.new;
     [borderTopPath moveToPoint:CGPointMake(0, 0)];
     [borderTopPath addLineToPoint:CGPointMake(CGRectGetMaxX(bounds), 0)];
 
@@ -622,7 +624,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     // Bottom white line
     //
     _borderBottomLayer.frame = self.bounds;
-    __block UIBezierPath *borderBottomPath = UIBezierPath.new;
+    UIBezierPath *borderBottomPath = UIBezierPath.new;
     const CGFloat lineY = bottom - _borderBottomLayer.lineWidth;
     [self addArrowAtPoint:CGPointMake(position, lineY) toPath:borderBottomPath withLineWidth:_borderBottomLayer.lineWidth];
 
@@ -641,19 +643,16 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     void(^assignLayerPaths)() = ^
     {
         ((CAShapeLayer *)self.layer).path = path.CGPath;
-        SD_RELEASE(path);
         self.layer.shadowPath = shadowPath.CGPath;
-        SD_RELEASE(shadowPath);
         _borderTopLayer.path = borderTopPath.CGPath;
-        SD_RELEASE(borderTopPath);
         _borderBottomLayer.path = borderBottomPath.CGPath;
-        SD_RELEASE(borderBottomPath);
 
         // Dereference itself to be not executed twice
+        SD_RELEASE(lastCompletionBlock);
         lastCompletionBlock = nil;
     };
 
-    __block void(^animationCompletion)();
+    void(^animationCompletion)();
     if (completion)
     {
         animationCompletion = ^
@@ -727,13 +726,17 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
         }
 
         // Remember completion block
-        lastCompletionBlock = assignLayerPaths;
+        lastCompletionBlock = SD_COPY(assignLayerPaths);
     }
     else
     {
         assignLayerPaths();
     }
 
+    SD_RELEASE(path);
+    SD_RELEASE(shadowPath);
+    SD_RELEASE(borderTopPath);
+    SD_RELEASE(borderBottomPath);
 }
 
 - (void)addAnimationWithDuration:(CFTimeInterval)duration onLayer:(CALayer *)layer forKey:(NSString *)key toPath:(UIBezierPath *)path
